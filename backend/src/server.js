@@ -96,9 +96,21 @@ if (!MONGODB_URI) {
 }
 
 mongoose.connect(MONGODB_URI)
-  .then(() => {
+  .then(async () => {
     console.log('[Mongoose] Connected to MongoDB Atlas successfully.');
     
+    // Auto-seed database if it contains no user records
+    try {
+      const { User } = require('./models');
+      const { autoSeedDatabase } = require('./scripts/autoSeed');
+      const count = await User.countDocuments({});
+      if (count === 0) {
+        await autoSeedDatabase();
+      }
+    } catch (seedErr) {
+      console.error('[Mongoose] Auto-seed failed:', seedErr.message);
+    }
+
     // Start Cron Jobs
     startCronJobs();
 
