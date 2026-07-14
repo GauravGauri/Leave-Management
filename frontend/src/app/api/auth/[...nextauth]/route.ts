@@ -43,9 +43,12 @@ export const authOptions: NextAuthOptions = {
           return null;
         } catch (error: any) {
           console.error('NextAuth authorize error:', error.response?.data || error.message);
-          throw new Error(error.response?.data?.message || 'Invalid email or password');
+          if (error.response) {
+            throw new Error(error.response.data?.message || 'Invalid email or password');
+          } else {
+            throw new Error(`API Unreachable: Cannot connect to backend at ${API_URL}. Details: ${error.message}`);
+          }
         }
-      }
     })
   ],
   callbacks: {
