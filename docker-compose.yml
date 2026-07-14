@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:6.0
+    container_name: hrms-mongodb
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - hrms-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: hrms-backend
+    ports:
+      - '5000:5000'
+    environment:
+      - PORT=5000
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongo:27017/LeaveManagement
+      - JWT_SECRET=jwt_secret_dev_123_enterprise_hrms_987
+      - CORS_ORIGIN=http://localhost:3000
+    depends_on:
+      - mongo
+    networks:
+      - hrms-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: hrms-frontend
+    ports:
+      - '3000:3000'
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:5000/api
+      - NEXTAUTH_URL=http://localhost:3000
+      - NEXTAUTH_SECRET=nextauth_secret_dev_123_hrms
+    depends_on:
+      - backend
+    networks:
+      - hrms-network
+
+volumes:
+  mongo-data:
+
+networks:
+  hrms-network:
+    driver: bridge

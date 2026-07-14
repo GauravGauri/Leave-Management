@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+
+# Next.js Build Output
+.next/
+out/
+build/
+
+# Production uploads
+backend/uploads/
+
+# Environment configurations (credentials)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+*.log
+logs/
+
+# IDE settings
+.vscode/
+.idea/
+.DS_Store
