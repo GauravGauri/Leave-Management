@@ -13,7 +13,17 @@ const {
 
 const autoSeedDatabase = async () => {
   try {
-    console.log('[Auto-Seed] Empty database detected. Populating initial HRMS data...');
+    console.log('[Auto-Seed] Empty database detected. Wiping metadata and populating initial HRMS data...');
+
+    // Wipe collections to avoid E11000 duplicate key conflicts on partial setup
+    await Department.deleteMany({});
+    await Designation.deleteMany({});
+    await LeaveType.deleteMany({});
+    await LeavePolicy.deleteMany({});
+    await EmployeeLeaveBalance.deleteMany({});
+    await Holiday.deleteMany({});
+    await Announcement.deleteMany({});
+    await AuditLog.deleteMany({});
 
     // 1. Create Departments
     const engineering = await Department.create({ name: 'Engineering', description: 'Software Development & Architecture' });
